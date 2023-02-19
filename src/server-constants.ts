@@ -4,5 +4,5 @@ export const PUBLIC_GA_TRACKING_ID = import.meta.env.PUBLIC_GA_TRACKING_ID
 export const NUMBER_OF_POSTS_PER_PAGE = 10
 export const REQUEST_TIMEOUT_MS = parseInt(import.meta.env.REQUEST_TIMEOUT_MS || '10000', 10)
 
-export const PUBLIC_SITE_TITLE = 'astro-notion-blog'
-export const PUBLIC_SITE_DESCRIPTION = 'astro-notion-blog is generated statically by Astro'
+export const PUBLIC_SITE_TITLE = 'Kitazawa Central Hights'
+export const PUBLIC_SITE_DESCRIPTION = 'みんなの仕事を見ることができます'
