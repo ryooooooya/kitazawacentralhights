@@ -21,6 +21,7 @@
     "@astrojs/tailwind": "^3.0.1",
     "@notionhq/client": "^2.2.3",
     "@supercharge/promise-pool": "^2.3.2",
+    "@vercel/edge": "^0.2.7",
     "astro": "^2.0.4",
     "katex": "^0.16.4",
     "mermaid": "^9.3.0",

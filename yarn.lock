@@ -907,6 +907,11 @@
     "@typescript-eslint/types" "5.48.0"
     eslint-visitor-keys "^3.3.0"
 
+"@vercel/edge@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@vercel/edge/-/edge-0.2.7.tgz#fc7766af44128b5e624565dce9e14443b5869d83"
+  integrity sha512-pyHPopdvBXcgU8cabwtGCBxmNeU4YDqRTZFqJJYN5UTcTqaI7jc1HtaCPaf4nbapDtLOcqGQWAil6Hz2OMMeiw==
+
 "@vscode/emmet-helper@^2.8.4":
   version "2.8.6"
   resolved "https://registry.yarnpkg.com/@vscode/emmet-helper/-/emmet-helper-2.8.6.tgz#ee2fa52321d6af8a40310fd9d37b8590a4dabb18"
