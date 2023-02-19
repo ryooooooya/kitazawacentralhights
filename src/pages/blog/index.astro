@@ -1,15 +1,15 @@
 ---
-import { NUMBER_OF_POSTS_PER_PAGE } from '../../server-constants.ts'
+import { NUMBER_OF_POSTS_PER_PAGE } from '../../server-constants'
 import {
   getPosts,
   getRankedPosts,
   getAllTags,
   getNumberOfPages,
-} from '../../lib/notion/client.ts'
+} from '../../lib/notion/client'
 import {
   buildPostFeaturedImageURLs,
   buildURLToImageMap,
-} from '../../lib/blog-helpers.ts'
+} from '../../lib/blog-helpers'
 import Layout from '../../layouts/Layout.astro'
 import NoContents from '../../components/NoContents.astro'
 import PostDate from '../../components/PostDate.astro'

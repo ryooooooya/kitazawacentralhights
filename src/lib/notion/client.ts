@@ -590,6 +590,7 @@ function _validPageObject(pageObject: responses.PageObject): boolean {
   )
 }
 
+// プロパティ
 function _buildPost(pageObject: responses.PageObject): Post {
   const prop = pageObject.properties
 
@@ -608,6 +609,10 @@ function _buildPost(pageObject: responses.PageObject): Post {
         ? prop.FeaturedImage.files[0].file.url
         : null,
     Rank: prop.Rank.number ? prop.Rank.number : 0,
+    Author:
+      prop.Author.rich_text && prop.Author.rich_text.length > 0
+        ? prop.Author.rich_text.map(t => t.plain_text).join('')
+        : '',
   }
 
   return post

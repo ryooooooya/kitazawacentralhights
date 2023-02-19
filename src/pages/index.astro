@@ -1,13 +1,73 @@
 ---
+import { NUMBER_OF_POSTS_PER_PAGE } from '../server-constants'
+import {
+  getPosts,
+  getRankedPosts,
+  getAllTags,
+  getNumberOfPages,
+} from '../lib/notion/client'
+import {
+  buildPostFeaturedImageURLs,
+  buildURLToImageMap,
+} from '../lib/blog-helpers'
 import Layout from '../layouts/Layout.astro'
+import NoContents from '../components/NoContents.astro'
+import PostDate from '../components/PostDate.astro'
+import PostTags from '../components/PostTags.astro'
+import PostTitle from '../components/PostTitle.astro'
+import PostFeaturedImage from '../components/PostFeaturedImage.astro'
+import PostExcerpt from '../components/PostExcerpt.astro'
+import ReadMoreLink from '../components/ReadMoreLink.astro'
+import Pagination from '../components/Pagination.astro'
+// import BlogPostsLink from '../components/BlogPostsLink.astro'
+import BlogTagsLink from '../components/BlogTagsLink.astro'
+// import styles from '../styles/blog.module.css'
+import PostAuthor from '../components/PostAuthor.astro'
+import { getPostLink } from '../lib/blog-helpers'
+
+const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+  getPosts(NUMBER_OF_POSTS_PER_PAGE),
+  getRankedPosts(),
+  getAllTags(),
+  getNumberOfPages(),
+])
+
+const imageURLs = buildPostFeaturedImageURLs(posts).filter(url => url)
+const imageURLMap = await buildURLToImageMap(imageURLs)
 ---
 
-<Layout>
-  <div class="container">
-    <main>
-      <h2>Welcome!</h2>
-      <p>Your astro-notion-blog deployed successfully!</p>
-      <p>Have fun!</p>
+<Layout
+  title=""
+  desctiption=""
+  path=""
+>
+  <div class="flex">
+    <aside class="w-1/2">
+      <nav>
+        <BlogTagsLink heading="Categories" tags={tags} />
+      </nav>
+    </aside>
+    <main class="w-1/2">
+      <section class="flex flex-wrap">
+        {posts.length === 0 ? (
+          <NoContents contents={posts} />
+        ) : posts.map(post => (
+          <a
+            href={getPostLink(post.Slug)}
+            key={post.Slug}
+            class="w-1/2 p-4"
+          >
+            <img src={imageURLMap[post.FeaturedImage]} alt="post-featured-image" />
+            <h2>
+              {post.Title}
+            </h2>
+            <p>
+              {post.Author}
+            </p>
+          </a>
+        ))}
+      </section>
+      <Pagination tag="" currentPage={1} numberOfPages={numberOfPages} />
     </main>
   </div>
 </Layout>

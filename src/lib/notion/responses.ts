@@ -255,6 +255,7 @@ interface PageProperties {
   [key: string]: PageProperty
 }
 
+// プロパティ
 interface PageProperty {
   id: string
   type: string
@@ -279,6 +280,7 @@ interface PageProperty {
   created_by?: UserObject
   last_edited_time?: string
   last_edited_by?: UserObject
+  author?: RichTextObject[]
 }
 
 interface SelectProperty {

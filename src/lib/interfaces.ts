@@ -1,3 +1,4 @@
+// プロパティ
 export interface Post {
   PageId: string
   Title: string
@@ -7,6 +8,7 @@ export interface Post {
   Excerpt: string
   FeaturedImage: string | null
   Rank: number
+  Author: string
 }
 
 export interface Block {
