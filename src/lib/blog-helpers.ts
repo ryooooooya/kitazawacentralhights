@@ -103,8 +103,11 @@ export const getPostLink = (slug: string) => {
 export const getTagLink = (tag: string) => {
   return `/blog/tag/${encodeURIComponent(tag)}`
 }
+export const getAuthorLink = (author: string) => {
+  return `/blog/author/${encodeURIComponent(author)}`
+}
 
-export const getPageLink = (page: number, tag: string) => {
+export const getPageLink = (page: number, tag: string, author: string) => {
   if (page === 1) {
     return tag ? getTagLink(tag) : '/blog'
   }

@@ -133,6 +133,13 @@ export async function getPostsByTag(tagName: string, pageSize = 10): Promise<Pos
   return allPosts.filter(post => post.Tags.find((tag) => tag.name === tagName)).slice(0, pageSize)
 }
 
+export async function getPostsByAuthor(authorName: string, pageSize = 10): Promise<Post[]> {
+  if (!authorName) return []
+
+  const allPosts = await getAllPosts()
+  return allPosts.filter(post => post.Authors.find((author) => author.name === authorName)).slice(0, pageSize)
+}
+
 // page starts from 1 not 0
 export async function getPostsByPage(page: number): Promise<Post[]> {
   if (page < 1) {
@@ -162,6 +169,21 @@ export async function getPostsByTagAndPage(tagName: string, page: number): Promi
   return posts.slice(startIndex, endIndex)
 }
 
+export async function getPostsByAuthorAndPage(authorName: string, page: number): Promise<Post[]> {
+  if (page < 1) {
+    return []
+  }
+
+  const allPosts = await getAllPosts()
+  const posts = allPosts.filter(post => post.Authors.find((author) => author.name === authorName))
+
+  const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE
+  const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE
+
+  return posts.slice(startIndex, endIndex)
+}
+
+
 export async function getNumberOfPages(): Promise<number> {
   const allPosts = await getAllPosts()
   return Math.floor(allPosts.length / NUMBER_OF_POSTS_PER_PAGE) + (allPosts.length % NUMBER_OF_POSTS_PER_PAGE > 0 ? 1 : 0)
@@ -170,6 +192,12 @@ export async function getNumberOfPages(): Promise<number> {
 export async function getNumberOfPagesByTag(tagName: string): Promise<number> {
   const allPosts = await getAllPosts()
   const posts = allPosts.filter(post => post.Tags.find((tag) => tag.name === tagName))
+  return Math.floor(posts.length / NUMBER_OF_POSTS_PER_PAGE) + (posts.length % NUMBER_OF_POSTS_PER_PAGE > 0 ? 1 : 0)
+}
+
+export async function getNumberOfPagesByAuthor(authorName: string): Promise<number> {
+  const allPosts = await getAllPosts()
+  const posts = allPosts.filter(post => post.Authors.find((author) => author.name === authorName))
   return Math.floor(posts.length / NUMBER_OF_POSTS_PER_PAGE) + (posts.length % NUMBER_OF_POSTS_PER_PAGE > 0 ? 1 : 0)
 }
 
@@ -256,6 +284,19 @@ export async function getAllTags(): Promise<SelectProperty[]> {
     if (!tagNames.includes(tag.name)) {
       acc.push(tag)
       tagNames.push(tag.name)
+    }
+    return acc
+  }, [] as SelectProperty[]).sort((a: SelectProperty, b: SelectProperty) => a.name.localeCompare(b.name))
+}
+
+export async function getAllAuthors(): Promise<SelectProperty[]> {
+  const allPosts = await getAllPosts()
+
+  const authorNames: string[] = []
+  return allPosts.flatMap(post => post.Authors).reduce((acc, author) => {
+    if (!authorNames.includes(author.name)) {
+      acc.push(author)
+      authorNames.push(author.name)
     }
     return acc
   }, [] as SelectProperty[]).sort((a: SelectProperty, b: SelectProperty) => a.name.localeCompare(b.name))
@@ -609,10 +650,7 @@ function _buildPost(pageObject: responses.PageObject): Post {
         ? prop.FeaturedImage.files[0].file.url
         : null,
     Rank: prop.Rank.number ? prop.Rank.number : 0,
-    Author:
-      prop.Author.rich_text && prop.Author.rich_text.length > 0
-        ? prop.Author.rich_text.map(t => t.plain_text).join('')
-        : '',
+    Authors: prop.Authors.multi_select ? prop.Authors.multi_select : [],
   }
 
   return post

@@ -5,30 +5,27 @@ import {
   getRankedPosts,
   getAllTags,
   getNumberOfPages,
+getAllAuthors,
 } from '../lib/notion/client'
 import {
   buildPostFeaturedImageURLs,
   buildURLToImageMap,
+  getAuthorLink,
 } from '../lib/blog-helpers'
 import Layout from '../layouts/Layout.astro'
 import NoContents from '../components/NoContents.astro'
-import PostDate from '../components/PostDate.astro'
-import PostTags from '../components/PostTags.astro'
-import PostTitle from '../components/PostTitle.astro'
-import PostFeaturedImage from '../components/PostFeaturedImage.astro'
-import PostExcerpt from '../components/PostExcerpt.astro'
-import ReadMoreLink from '../components/ReadMoreLink.astro'
 import Pagination from '../components/Pagination.astro'
 // import BlogPostsLink from '../components/BlogPostsLink.astro'
 import BlogTagsLink from '../components/BlogTagsLink.astro'
-// import styles from '../styles/blog.module.css'
-import PostAuthor from '../components/PostAuthor.astro'
 import { getPostLink } from '../lib/blog-helpers'
+import type { SelectProperty } from '../lib/interfaces'
+import PostAuthors from '../components/PostAuthors.astro'
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+const [posts, rankedPosts, tags, authors, numberOfPages, ] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
   getRankedPosts(),
   getAllTags(),
+  getAllAuthors(),
   getNumberOfPages(),
 ])
 
@@ -41,59 +38,116 @@ const imageURLMap = await buildURLToImageMap(imageURLs)
   desctiption=""
   path=""
 >
-  <div class="flex">
-    <aside class="w-1/2">
+  <div class="flex w-full gap-x-10 px-10">
+    <aside class="navWrap">
+      <h1 class="title">北沢セントラルハイツ501</h1>
+      <p class="titleEn">Kitazawa Central Hights</p>
       <nav>
-        <BlogTagsLink heading="Categories" tags={tags} />
+        <BlogTagsLink heading="Categories" currentTag="" tags={tags} />
       </nav>
     </aside>
-    <main class="w-1/2">
-      <section class="flex flex-wrap">
+    <main class="workWrap">
+      <section class="flex flex-wrap gap-10">
         {posts.length === 0 ? (
           <NoContents contents={posts} />
         ) : posts.map(post => (
           <a
             href={getPostLink(post.Slug)}
             key={post.Slug}
-            class="w-1/2 p-4"
+            class="workItem"
           >
-            <img src={imageURLMap[post.FeaturedImage]} alt="post-featured-image" />
-            <h2>
-              {post.Title}
-            </h2>
-            <p>
-              {post.Author}
-            </p>
+            <div class="workImage">
+              <img src={imageURLMap[post.FeaturedImage]} alt="post-featured-image" />
+            </div>
+            <div class="workInformation">
+              <h2>
+                {post.Title}
+              </h2>
+              {post.Authors &&
+              post.Authors.length > 0 &&
+              post.Authors.map((author: SelectProperty) => (
+                <p>
+                  {author.name}
+                </p>
+              ))}
+            </div>
           </a>
         ))}
       </section>
-      <Pagination tag="" currentPage={1} numberOfPages={numberOfPages} />
+      <div class="mt-10">
+        <Pagination tag="" currentPage={1} numberOfPages={numberOfPages} />
+      </div>
     </main>
   </div>
 </Layout>
 
-<style>
-  .container {
-    width: 640px;
-    max-width: 100%;
-    margin: 0 auto;
+<style lang="scss">
+  .navWrap{
+    width: calc((100% - 80px) / 3);
+    padding-top: 32px;
   }
-
-  .container > main {
-    margin-bottom: 40px;
-  }
-  .container div:last-child {
-    margin-bottom: 0;
-  }
-
-  .container h2 {
-    margin: 0 0 14px;
-    font-size: 1.4rem;
+  .title{
+    font-size: 2rem;
     font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
-
-  .container p {
-    margin: 0.3rem auto;
-    line-height: 2rem;
+  .titleEn{
+    font-size: 1.6875rem;
+    line-height: 1.481;
+    letter-spacing: -0.035em;
+  }
+  .workWrap{
+    width: calc((100% - 80px) / 3 * 2 + 40px);
+  }
+  .workItem{
+    position: relative;
+    width: calc((100% - 40px) / 2);
+    margin-top: 40px;
+    @media (hover:hover) {
+      &:hover{
+        .workInformation{
+          h2, p{
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  .workImage{
+    padding: 32px;
+    background: #F2F3F5;
+    img{
+      height: 100%;
+      max-height: 256px;
+      margin: 0 auto;
+      box-shadow: 0px 8px 18px -10px rgba(0, 0, 0, 0.15);
+    }
+  }
+  .workInformation{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4px;
+    overflow: hidden;
+    h2, p{
+      font-size: 1.125rem;
+      line-height: 1.777;
+      letter-spacing: -0.01em;
+      opacity: 0;
+    }
+    h2{
+      flex: 1;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+    p{
+      width: 100px;
+      text-align: right;
+    }
   }
 </style>

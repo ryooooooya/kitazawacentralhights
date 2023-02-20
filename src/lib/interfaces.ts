@@ -8,7 +8,7 @@ export interface Post {
   Excerpt: string
   FeaturedImage: string | null
   Rank: number
-  Author: string
+  Authors: SelectProperty[]
 }
 
 export interface Block {

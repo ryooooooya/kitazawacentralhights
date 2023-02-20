@@ -18,6 +18,7 @@ import PostBody from '../../components/PostBody.astro'
 import BlogPostsLink from '../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../components/BlogTagsLink.astro'
 import styles from '../../styles/blog.module.css'
+import type { SelectProperty } from '../../lib/interfaces'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -47,24 +48,47 @@ const [
 ---
 
 <Layout title={post.Title} description={post.Excerpt} path={getPostLink(post.Slug)}>
-  <div className={styles.container}>
-    <main>
-      <div className={styles.post}>
-        <PostDate post={post} />
+  <article class="articleWrap">
+    <div class="articleItem">
+      <h1 class="articleTitle">
+        {post.Title}
+      </h1>
+      <div class="flex justify-between items-center mt-4">
         <PostTags post={post} />
-        <PostTitle post={post} enableLink={false} />
-        <PostBody blocks={blocks} />
-
-        <footer>
-        </footer>
+        {post.Authors &&
+          post.Authors.length > 0 &&
+          post.Authors.map((author: SelectProperty) => (
+            <p class="articleAuthor">
+              {author.name}
+            </p>
+        ))}
       </div>
-    </main>
-
-    <aside>
-      <BlogPostsLink heading="Posts in the same category" posts={postsHavingSameTag.filter((p: interfaces.Post) => p.Slug !== post.Slug)} />
-      <BlogPostsLink heading="Recommended" posts={rankedPosts} />
-      <BlogPostsLink heading="Latest posts" posts={recentPosts} />
-      <BlogTagsLink heading="Categories" tags={tags} />
-    </aside>
-  </div>
+      <PostBody blocks={blocks} />
+    </div>
+  </article>
 </Layout>
+
+<style lang="scss">
+  .articleWrap{
+    width: 100%;
+    padding: 40px;
+    background: #F2F3F5;
+  }
+  .articleItem{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 160px;
+    background: #fff;
+  }
+  .articleTitle{
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .articleAuthor{
+    font-size: 1.125rem;
+    line-height: 1.777;
+    letter-spacing: -0.01em;
+  }
+</style>
