@@ -18,12 +18,6 @@ const { tags, currentTag } = Astro.props
       <NoContents contents={tags} />
     ) : (
       <ul class="tagList">
-        {currentTag.length > 0 ?
-          <li class="tagItem">
-            <a href="/">ALL</a>
-          </li>
-          : ''
-        }
         {tags.map((tag: SelectProperty) => (
           <li
             className={`${
