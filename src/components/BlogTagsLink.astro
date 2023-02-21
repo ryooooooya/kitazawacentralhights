@@ -20,7 +20,7 @@ const { tags, currentTag } = Astro.props
       <ul class="tagList">
         {tags.map((tag: SelectProperty) => (
           <li
-            className={`${
+            class={`${
               currentTag === tag.name ? '__current' : ''
             } tagItem`}
           >
